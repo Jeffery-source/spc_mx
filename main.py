@@ -1,4 +1,7 @@
-from app.services.cmm_service import process_file
+from app.watcherdog import start_watcher
 
 if __name__ == "__main__":
-    process_file("data/TSL.csv")
+
+    folder = r"E:\\SPC"
+
+    start_watcher(folder)

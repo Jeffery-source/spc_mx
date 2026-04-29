@@ -1,8 +1,10 @@
 import uuid
 import pandas as pd
 from config.db import engine
-from app.etl.cmm_parser import parse_csv, extract_header, extract_detail,build_datetime,extract_feature_standard,insert_feature_standard,get_file_hash,is_processed,mark_processed
+from app.etl.cmm_parser import parse_datetime, extract_header, extract_detail,extract_feature_standard,insert_feature_standard,get_file_hash,is_processed,load_lines
 from sqlalchemy import text
+
+
 
 def process_file(file_path):
 
@@ -11,10 +13,10 @@ def process_file(file_path):
     # ❌ 已处理直接跳过
     if is_processed(engine, file_hash):
         print("⏭ 文件已处理，跳过:", file_path)
-        return
+        return "SKIP"
 
 
-    lines = parse_csv(file_path)
+    lines = load_lines(file_path)
     report_id = str(uuid.uuid4())
     # 🟦 header
     header = extract_header(lines)
@@ -25,7 +27,7 @@ def process_file(file_path):
         "drawing_no": header.get("drawing_no"),
         "part_no": header.get("part_no"),
         # ⭐ 关键：合并后的时间
-        "measure_time": build_datetime(
+        "measure_time": parse_datetime(
             header.get("measure_date"),
             header.get("measure_time")
         )
@@ -83,6 +85,7 @@ def process_file(file_path):
             })
 
         print("✅ 全部入库成功")
+        return "SUCCESS"
 
     except Exception as e:
         print("❌ 事务失败，已自动回滚:", e)
