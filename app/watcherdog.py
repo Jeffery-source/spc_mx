@@ -6,7 +6,7 @@ from config.db import engine
 def start_watcher(folder):
 
     while True:
-        print("🔍 扫描目录:", folder)
+        print("扫描目录:", folder)
 
         files = scan_excel_files(folder)
 
@@ -25,7 +25,7 @@ def start_watcher(folder):
                     failed_files  += 1
             if file.startswith("~$"):
                 continue
-         # 🟢 写 scan_log（数据库）
+         # 写 scan_log（数据库）
         insert_scan_log(
             engine=engine,
             folder=folder,
