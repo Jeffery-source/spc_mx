@@ -1,18 +1,22 @@
 import uuid
 import pandas as pd
-from config.db import engine
+from database.db import engine
 from app.etl.cmm_parser import parse_datetime, extract_header, extract_detail,extract_feature_standard,insert_feature_standard,get_file_hash,is_processed,load_lines
 from sqlalchemy import text
-
-
+from datetime import datetime
+import os
 
 def process_file(file_path):
-
+    
     file_hash = get_file_hash(file_path)
 
+      # 获取最后修改时间
+    modify_time = datetime.fromtimestamp(
+        os.path.getmtime(file_path)
+    ).strftime("%Y-%m-%d %H:%M:%S")
     # 已处理直接跳过
     if is_processed(engine, file_hash):
-        print("文件已处理，跳过:", file_path)
+        print(f"[SKIP] {modify_time} | {file_path}")
         return "SKIP"
 
 
@@ -84,7 +88,7 @@ def process_file(file_path):
                 "file_hash": file_hash
             })
 
-        print("入库成功")
+        print(f"[SUCCESS] {modify_time} | {file_path}")
         return "SUCCESS"
 
     except Exception as e:

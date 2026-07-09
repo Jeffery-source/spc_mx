@@ -51,7 +51,7 @@ def wait_file_ready(file_path, wait=2):
 
     return size1 == size2
 
-def scan_excel_files(folder_path):
+def get_excel_files_by_modified_time(folder_path):
 
     files = []
 
@@ -60,7 +60,10 @@ def scan_excel_files(folder_path):
 
             if file.lower().endswith((".xlsx", ".xls")):
                 files.append(os.path.join(root, file))
-
+    files.sort(
+    key=os.path.getmtime,
+    reverse=True
+)
     return files
 
 def load_lines(file_path):

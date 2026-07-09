@@ -1,0 +1,10 @@
+# 文件监听目录folder: "\\\\10.101.18.251\\quality_assurance_department\\CMM"
+folder: "E:\\SPC"
+
+# 数据库
+database:
+  user: "XusAd"
+  password: "Xus@123."
+  host: "10.18.16.239"
+  port: 3306
+  name: "spc_mx"
